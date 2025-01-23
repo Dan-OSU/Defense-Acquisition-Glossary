@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Searchable Table</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <h1>Searchable Table</h1>
+    <table id="csv-table" class="display" style="width:100%">
+        <thead>
+            <tr id="table-header">
+                <!-- Headers will be populated dynamically -->
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Data will be populated dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const csvFileUrl = "defense-innovation-orgs.csv"; // Replace with the correct file path in your repository
+
+            Papa.parse(csvFileUrl, {
+                download: true,
+                header: true,
+                complete: function (results) {
+                    const data = results.data;
+                    const columns = Object.keys(data[0]);
+
+                    // Populate table headers
+                    const headerRow = document.getElementById("table-header");
+                    columns.forEach(col => {
+                        const th = document.createElement("th");
+                        th.textContent = col;
+                        headerRow.appendChild(th);
+                    });
+
+                    // Populate table body
+                    const tableBody = document.getElementById("table-body");
+                    data.forEach(row => {
+                        const tr = document.createElement("tr");
+                        columns.forEach(col => {
+                            const td = document.createElement("td");
+                            td.textContent = row[col];
+                            tr.appendChild(td);
+                        });
+                        tableBody.appendChild(tr);
+                    });
+
+                    // Initialize DataTable
+                    $('#csv-table').DataTable();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
