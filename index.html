@@ -8,10 +8,22 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #csv-table_wrapper {
+            max-width: 100%; /* Make the table container adapt to screen size */
+        }
+        table {
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <h1>Searchable Table</h1>
-    <table id="csv-table" class="display" style="width:100%">
+    <table id="csv-table" class="display nowrap" style="width:100%">
         <thead>
             <tr id="table-header">
                 <!-- Headers will be populated dynamically -->
@@ -53,8 +65,12 @@
                         tableBody.appendChild(tr);
                     });
 
-                    // Initialize DataTable
-                    $('#csv-table').DataTable();
+                    // Initialize DataTable with scrolling and search
+                    $('#csv-table').DataTable({
+                        scrollY: "400px", // Set the scrollable height
+                        scrollCollapse: true, // Allow table height to reduce if less data
+                        paging: false, // Disable pagination to show the full table
+                    });
                 }
             });
         });
