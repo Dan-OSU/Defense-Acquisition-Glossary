@@ -14,7 +14,7 @@
             margin: 20px;
         }
         #csv-table_wrapper {
-            max-width: 100%; /* Make the table container adapt to screen size */
+            max-width: 100%;
         }
         table {
             width: 100%;
@@ -42,7 +42,14 @@
                 download: true,
                 header: true,
                 complete: function (results) {
-                    const data = results.data;
+                    let data = results.data;
+
+                    // Remove rows where all fields are blank
+                    data = data.filter(row => {
+                        return Object.values(row).some(value => value.trim() !== "");
+                    });
+
+                    // Get column headers
                     const columns = Object.keys(data[0]);
 
                     // Populate table headers
@@ -65,11 +72,12 @@
                         tableBody.appendChild(tr);
                     });
 
-                    // Initialize DataTable with scrolling and search
+                    // Initialize DataTable with sorting and scrolling
                     $('#csv-table').DataTable({
-                        scrollY: "400px", // Set the scrollable height
-                        scrollCollapse: true, // Allow table height to reduce if less data
-                        paging: false, // Disable pagination to show the full table
+                        scrollY: "500px", // Increase the height to make more content visible
+                        scrollCollapse: true,
+                        paging: false,
+                        order: [[columns.indexOf("Name"), "asc"]], // Sort by the "Name" column, A-Z
                     });
                 }
             });
