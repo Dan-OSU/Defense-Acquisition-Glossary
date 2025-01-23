@@ -37,6 +37,20 @@
         </tbody>
     </table>
 
+    <!-- Add the image -->
+    <img id="bottom-right-image" src="images/walter-glasses-300x199.jpg" alt="Scientist with glasses">
+
+    <style>
+        #bottom-right-image {
+            position: fixed; /* Makes the image stay in place even when scrolling */
+            bottom: 20px; /* Distance from the bottom of the viewport */
+            right: 20px; /* Distance from the right of the viewport */
+            width: 150px; /* Adjust size as needed */
+            height: auto; /* Maintain aspect ratio */
+            z-index: 1000; /* Ensure it stays on top of other content */
+        }
+    </style>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const csvFileUrl = "defense-innovation-orgs.csv"; // Replace with the correct file path in your repository
