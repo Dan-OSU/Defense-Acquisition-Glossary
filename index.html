@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Searchable Table</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/colresizable/colResizable.css"> <!-- Add colResizable CSS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable.min.js"></script> <!-- Add colResizable JS -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,13 +33,22 @@
             overflow-wrap: break-word; /* Wrap long words */
             text-align: left; /* Align text to the left for readability */
         }
+
+        #bottom-right-image {
+            position: fixed; /* Makes the image stay in place even when scrolling */
+            bottom: 20px; /* Distance from the bottom of the viewport */
+            right: 20px; /* Distance from the right of the viewport */
+            width: 150px; /* Adjust size as needed */
+            height: auto; /* Maintain aspect ratio */
+            z-index: 1000; /* Ensure it stays on top of other content */
+        }
     </style>
 </head>
 <body>
     <h1>List of Defense innovation orgs</h1>
     <p>
         You can sort by clicking on the top of any of the columns, and you can filter using the search bar.<br>
-        Modeled after MetaOSINT's table, but simplified greatly.  Thanks, ChatGPT.<br>
+        Modeled after MetaOSINT's table, but simplified greatly. Thanks, ChatGPT.<br>
         -Dan Rust
     </p>
     <table id="csv-table" class="display nowrap" style="width:100%">
@@ -51,47 +62,8 @@
         </tbody>
     </table>
 
-<p>
-    See also: <br>
-    Explore various resources in the innovation ecosystem: <br>
-    <a href="https://www.ctoinnovation.mil/innovation-organizations" target="_blank">Innovation organizations</a><br>
-    <a href="https://aida.mitre.org/dod-innovation-ecosystem/" target="_blank">DoD innovation ecosystem</a><br><br>
-    "NatSec.io is an exploratory effort incubated by the Defense Entrepreneurs Forum in 2021 that seeks to increase understanding of the national security innovation ecosystem, improve data literacy, and support learning mindsets with opportunities to experiment."
-    <br>
-    "Elements: We think four elements can help interested people on their own journeys discover and help create value in and around the national security innovation ecosystem." <br>
-    <strong>Data:</strong> "What powers the project (and an easy way to contribute)." <br>
-    <strong>Graph:</strong> "How the project data is connected." <br>
-    <strong>Map:</strong> "Where to find the project in your neighborhood." <br>
-    <strong>Timeline:</strong> "How national security innovation shows evolution over time." <br>
-    Resources: <br>
-    <a href="https://www.natsec.io/app" target="_blank">NatSec.io Interactive App</a><br>
-    <a href="https://www.natsec.io/data" target="_blank">NatSec.io Data</a><br>
-    <a href="https://www.natsec.io/graph" target="_blank">NatSec.io Graph</a><br>
-    <a href="https://www.natsec.io/map" target="_blank">NatSec.io Map</a><br>
-    <a href="https://docs.google.com/spreadsheets/d/1dj9LztlbBCB7BPCNpTHd8ko_Uz1pcLQDjTOfEYJH6Ik/edit?gid=1780929379#gid=1780929379" target="_blank">NatSec.io Google Sheets Resource</a><br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-</p>
-
     <!-- Add the image -->
     <img id="bottom-right-image" src="images/walter-glasses-300x199.jpg" alt="Scientist with glasses">
-
-    <style>
-        #bottom-right-image {
-            position: fixed; /* Makes the image stay in place even when scrolling */
-            bottom: 20px; /* Distance from the bottom of the viewport */
-            right: 20px; /* Distance from the right of the viewport */
-            width: 150px; /* Adjust size as needed */
-            height: auto; /* Maintain aspect ratio */
-            z-index: 1000; /* Ensure it stays on top of other content */
-        }
-    </style>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -132,11 +104,17 @@
                     });
 
                     // Initialize DataTable with sorting and scrolling
-                    $('#csv-table').DataTable({
+                    const table = $('#csv-table').DataTable({
                         scrollY: "500px", // Increase the height to make more content visible
                         scrollCollapse: true,
                         paging: false,
                         order: [[columns.indexOf("Name"), "asc"]], // Sort by the "Name" column, A-Z
+                    });
+
+                    // Add colResizable functionality to make columns resizable
+                    $('#csv-table').colResizable({
+                        liveDrag: true, // Resizes columns in real-time as the user drags
+                        minWidth: 50,   // Minimum column width
                     });
                 }
             });
