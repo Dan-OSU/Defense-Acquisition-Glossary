@@ -23,7 +23,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
+            /* Removed table-layout: fixed to allow content-based sizing */
         }
 
         th {
@@ -31,8 +31,6 @@
             background-color: #f4f4f4;
             padding: 8px;
             border: 1px solid #ddd;
-            overflow: hidden;
-            text-overflow: ellipsis;
             white-space: nowrap;
             cursor: col-resize;
         }
@@ -196,13 +194,27 @@
                         tableBody.appendChild(tr);
                     });
 
-                    // Initialize DataTable
+                    // Initialize DataTable with improved settings for content-based sizing
                     const table = $('#csv-table').DataTable({
                         scrollY: "500px",
                         scrollCollapse: true,
                         paging: false,
-                        order: [[columns.indexOf("Name"), "asc"]]
+                        autoWidth: true,  // Enable automatic column sizing
+                        order: [[columns.indexOf("Name"), "asc"]],
+                        columnDefs: [{
+                            targets: '_all',
+                            render: function(data, type, row) {
+                                if (type === 'display') {
+                                    // Allow text to wrap while maintaining resize capability
+                                    return '<div style="white-space: normal;">' + data + '</div>';
+                                }
+                                return data;
+                            }
+                        }]
                     });
+
+                    // Adjust column widths after table initialization
+                    table.columns.adjust();
 
                     // Column resize functionality
                     const thElems = document.querySelectorAll('th');
