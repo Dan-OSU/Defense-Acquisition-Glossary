@@ -23,47 +23,26 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
         }
 
         th {
-            position: relative;
             background-color: #f4f4f4;
-            padding: 8px;
+            padding: 12px 8px;
             border: 1px solid #ddd;
-            overflow: hidden;
-            text-overflow: ellipsis;
             white-space: normal;
-            cursor: pointer;
-            min-width: 100px;
-        }
-
-        th .content {
-            padding-right: 10px;
-            word-wrap: break-word;
-        }
-
-        td {
-            padding: 8px;
-            border: 1px solid #ddd;
-            word-wrap: break-word;
+            overflow-wrap: break-word;
+            min-width: 150px;
+            max-width: 300px;
             vertical-align: top;
         }
 
-        .resize-handle {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            cursor: col-resize;
-            background-color: #ddd;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        th:hover .resize-handle {
-            opacity: 1;
+        td {
+            padding: 12px 8px;
+            border: 1px solid #ddd;
+            white-space: normal;
+            overflow-wrap: break-word;
+            vertical-align: top;
+            line-height: 1.4;
         }
 
         /* GitHub Corner Styles */
@@ -116,7 +95,7 @@
 <body>
     <h1>List of Defense Innovation Organizations</h1>
     <p>
-        You can sort by clicking on the top of any of the columns, filter using the search bar, and resize columns by dragging the column edges.<br>
+        You can sort by clicking on column headers and filter using the search bar.<br>
         Modeled after MetaOSINT's table, but simplified greatly. Thanks, ChatGPT.<br>
         -Dan Rust
     </p>
@@ -131,7 +110,7 @@
     See also:<br>
     Explore various resources in the innovation ecosystem:<br>
     <a href="https://www.ctoinnovation.mil/innovation-organizations" target="_blank">Innovation organizations</a><br>
-    <a href="https://aida.mitre.org/dod-innovation-ecosystem/" target="_blank">DoD innovation ecosystem</a><br>
+    <a href="https://aida.mitre.org/dod-innovation-ecosystem/" target="_blank">DoD innovation ecosystem</a><br><br>
     "NatSec.io is an exploratory effort incubated by the Defense Entrepreneurs Forum in 2021 that seeks to increase understanding of the national security innovation ecosystem, improve data literacy, and support learning mindsets with opportunities to experiment."
     <br>
     "Elements: We think four elements can help interested people on their own journeys discover and help create value in and around the national security innovation ecosystem." <br>
@@ -179,20 +158,11 @@
 
                     const columns = Object.keys(data[0]);
                     
-                    // Initialize headers with resize handles
+                    // Initialize headers
                     const headerRow = document.getElementById("table-header");
                     columns.forEach(col => {
                         const th = document.createElement("th");
-                        // Create content container
-                        const content = document.createElement("div");
-                        content.className = "content";
-                        content.textContent = col;
-                        th.appendChild(content);
-                        
-                        // Create resize handle
-                        const handle = document.createElement("div");
-                        handle.className = "resize-handle";
-                        th.appendChild(handle);
+                        th.textContent = col;
                         headerRow.appendChild(th);
                     });
 
@@ -208,53 +178,22 @@
                         tableBody.appendChild(tr);
                     });
 
-                    // Initialize DataTable
+                    // Initialize DataTable with enhanced configurations
                     const table = $('#csv-table').DataTable({
                         scrollY: "500px",
                         scrollCollapse: true,
                         paging: false,
-                        order: [[columns.indexOf("Name"), "asc"]]
-                    });
-
-                    // Column resize functionality
-                    const thElems = document.querySelectorAll('th');
-                    thElems.forEach(th => {
-                        const resizeHandle = th.querySelector('.resize-handle');
-                        let startX, startWidth;
-
-                        resizeHandle.addEventListener('mousedown', function(e) {
-                            startX = e.pageX;
-                            startWidth = th.offsetWidth;
-                            
-                            document.addEventListener('mousemove', resize);
-                            document.addEventListener('mouseup', stopResize);
-                            
-                            // Prevent sorting when resizing
-                            e.stopPropagation();
-                            e.preventDefault();
-                        });
-
-                        function resize(e) {
-                            const width = Math.max(100, startWidth + (e.pageX - startX));
-                            th.style.width = `${width}px`;
-                            
-                            // Force DataTables to recalculate column widths
-                            table.columns.adjust();
-                        }
-
-                        function stopResize() {
-                            document.removeEventListener('mousemove', resize);
-                            document.removeEventListener('mouseup', stopResize);
-                        }
-
-                        // Handle click events separately from resize events
-                        th.addEventListener('click', function(e) {
-                            // Only trigger sort if we're not resizing
-                            if (!e.target.classList.contains('resize-handle')) {
-                                const index = Array.from(th.parentElement.children).indexOf(th);
-                                table.column(index).order('asc').draw();
+                        order: [[columns.indexOf("Name"), "asc"]],
+                        autoWidth: false,
+                        columnDefs: [{
+                            targets: '_all',
+                            render: function(data, type, row) {
+                                if (type === 'display') {
+                                    return data ? data : '';
+                                }
+                                return data;
                             }
-                        });
+                        }]
                     });
                 }
             });
