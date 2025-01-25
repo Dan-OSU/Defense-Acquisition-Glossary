@@ -13,11 +13,23 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         #csv-table_wrapper {
             max-width: 100%;
         }
+
         table {
             width: 100%;
+            table-layout: fixed; /* Ensures column widths follow rules */
+            word-wrap: break-word; /* Allows text to wrap within cells */
+        }
+
+        th, td {
+            min-width: 100px; /* Minimum column width */
+            max-width: 200px; /* Maximum column width */
+            white-space: normal; /* Allows text to wrap */
+            overflow-wrap: break-word; /* Wrap long words */
+            text-align: left; /* Align text to the left for readability */
         }
     </style>
 </head>
