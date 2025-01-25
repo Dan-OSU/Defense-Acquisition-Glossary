@@ -33,8 +33,14 @@
             border: 1px solid #ddd;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-            cursor: col-resize;
+            white-space: normal;
+            cursor: pointer;
+            min-width: 100px;
+        }
+
+        th .content {
+            padding-right: 10px;
+            word-wrap: break-word;
         }
 
         td {
@@ -121,33 +127,33 @@
         <tbody id="table-body"></tbody>
     </table>
 
-    <p>
-        See also:<br>
-        Explore various resources in the innovation ecosystem:<br>
-        <a href="https://www.ctoinnovation.mil/innovation-organizations" target="_blank">Innovation organizations</a><br>
-        <a href="https://aida.mitre.org/dod-innovation-ecosystem/" target="_blank">DoD innovation ecosystem</a><br>
-        "NatSec.io is an exploratory effort incubated by the Defense Entrepreneurs Forum in 2021 that seeks to increase understanding of the national security innovation ecosystem, improve data literacy, and support learning mindsets with opportunities to experiment."
-        <br>
-        "Elements: We think four elements can help interested people on their own journeys discover and help create value in and around the national security innovation ecosystem." <br>
-        <strong>Data:</strong> "What powers the project (and an easy way to contribute)." <br>
-        <strong>Graph:</strong> "How the project data is connected." <br>
-        <strong>Map:</strong> "Where to find the project in your neighborhood." <br>
-        <strong>Timeline:</strong> "How national security innovation shows evolution over time." <br>
-        Resources: <br>
-        <a href="https://www.natsec.io/app" target="_blank">NatSec.io Interactive App</a><br>
-        <a href="https://www.natsec.io/data" target="_blank">NatSec.io Data</a><br>
-        <a href="https://www.natsec.io/graph" target="_blank">NatSec.io Graph</a><br>
-        <a href="https://www.natsec.io/map" target="_blank">NatSec.io Map</a><br>
-        <a href="https://docs.google.com/spreadsheets/d/1dj9LztlbBCB7BPCNpTHd8ko_Uz1pcLQDjTOfEYJH6Ik/edit?gid=1780929379#gid=1780929379" target="_blank">NatSec.io Google Sheets Resource</a><br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-    </p>
+<p>
+    See also:<br>
+    Explore various resources in the innovation ecosystem:<br>
+    <a href="https://www.ctoinnovation.mil/innovation-organizations" target="_blank">Innovation organizations</a><br>
+    <a href="https://aida.mitre.org/dod-innovation-ecosystem/" target="_blank">DoD innovation ecosystem</a><br>
+    "NatSec.io is an exploratory effort incubated by the Defense Entrepreneurs Forum in 2021 that seeks to increase understanding of the national security innovation ecosystem, improve data literacy, and support learning mindsets with opportunities to experiment."
+    <br>
+    "Elements: We think four elements can help interested people on their own journeys discover and help create value in and around the national security innovation ecosystem." <br>
+    <strong>Data:</strong> "What powers the project (and an easy way to contribute)." <br>
+    <strong>Graph:</strong> "How the project data is connected." <br>
+    <strong>Map:</strong> "Where to find the project in your neighborhood." <br>
+    <strong>Timeline:</strong> "How national security innovation shows evolution over time." <br>
+    Resources: <br>
+    <a href="https://www.natsec.io/app" target="_blank">NatSec.io Interactive App</a><br>
+    <a href="https://www.natsec.io/data" target="_blank">NatSec.io Data</a><br>
+    <a href="https://www.natsec.io/graph" target="_blank">NatSec.io Graph</a><br>
+    <a href="https://www.natsec.io/map" target="_blank">NatSec.io Map</a><br>
+    <a href="https://docs.google.com/spreadsheets/d/1dj9LztlbBCB7BPCNpTHd8ko_Uz1pcLQDjTOfEYJH6Ik/edit?gid=1780929379#gid=1780929379" target="_blank">NatSec.io Google Sheets Resource</a><br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+</p>
 
     <img id="bottom-right-image" src="images/walter-glasses-300x199.jpg" alt="Scientist with glasses">
 
@@ -177,7 +183,13 @@
                     const headerRow = document.getElementById("table-header");
                     columns.forEach(col => {
                         const th = document.createElement("th");
-                        th.textContent = col;
+                        // Create content container
+                        const content = document.createElement("div");
+                        content.className = "content";
+                        content.textContent = col;
+                        th.appendChild(content);
+                        
+                        // Create resize handle
                         const handle = document.createElement("div");
                         handle.className = "resize-handle";
                         th.appendChild(handle);
@@ -217,18 +229,32 @@
                             document.addEventListener('mousemove', resize);
                             document.addEventListener('mouseup', stopResize);
                             
+                            // Prevent sorting when resizing
+                            e.stopPropagation();
                             e.preventDefault();
                         });
 
                         function resize(e) {
-                            const width = startWidth + (e.pageX - startX);
+                            const width = Math.max(100, startWidth + (e.pageX - startX));
                             th.style.width = `${width}px`;
+                            
+                            // Force DataTables to recalculate column widths
+                            table.columns.adjust();
                         }
 
                         function stopResize() {
                             document.removeEventListener('mousemove', resize);
                             document.removeEventListener('mouseup', stopResize);
                         }
+
+                        // Handle click events separately from resize events
+                        th.addEventListener('click', function(e) {
+                            // Only trigger sort if we're not resizing
+                            if (!e.target.classList.contains('resize-handle')) {
+                                const index = Array.from(th.parentElement.children).indexOf(th);
+                                table.column(index).order('asc').draw();
+                            }
+                        });
                     });
                 }
             });
