@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Defense Innovation Organizations</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
         body {
@@ -194,13 +196,19 @@
                         tableBody.appendChild(tr);
                     });
 
-                    // Initialize DataTable with improved settings for content-based sizing
+                    // Initialize DataTable with improved settings for content-based sizing and fixed header
                     const table = $('#csv-table').DataTable({
-                        scrollY: "500px",
+                        scrollX: true,           // Enable horizontal scrolling
+                        scrollY: "500px",        // Enable vertical scrolling
                         scrollCollapse: true,
                         paging: false,
-                        autoWidth: true,  // Enable automatic column sizing
+                        autoWidth: true,         // Enable automatic column sizing
                         order: [[columns.indexOf("Name"), "asc"]],
+                        fixedHeader: {
+                            header: true,        // Keep header fixed vertically
+                            headerOffset: 0,     // Offset from top of window
+                            fixedOffset: 0       // Offset for fixed header
+                        },
                         columnDefs: [{
                             targets: '_all',
                             render: function(data, type, row) {
