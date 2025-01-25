@@ -3,112 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Defense Innovation Organizations</title>
+    <title>Searchable Table</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/colresizable/colResizable.css"> <!-- Add colResizable CSS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable.min.js"></script> <!-- Add colResizable JS -->
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            padding-bottom: 100px;
         }
 
         #csv-table_wrapper {
             max-width: 100%;
-            overflow-x: auto;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            table-layout: auto; /* Allow automatic column width */
+            border-collapse: collapse; /* Neat table border */
+            word-wrap: break-word; /* Ensure text wraps */
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd; /* Add borders for better visuals */
+            vertical-align: top; /* Align content to the top of the cell */
         }
 
         th {
-            background-color: #f4f4f4;
-            padding: 12px 8px;
-            border: 1px solid #ddd;
-            white-space: normal;
-            overflow-wrap: break-word;
-            min-width: 150px;
-            max-width: 300px;
-            vertical-align: top;
-        }
-
-        td {
-            padding: 12px 8px;
-            border: 1px solid #ddd;
-            white-space: normal;
-            overflow-wrap: break-word;
-            vertical-align: top;
-            line-height: 1.4;
-        }
-
-        /* GitHub Corner Styles */
-        .github-corner {
-            position: absolute;
-            top: 0;
-            right: 0;
-            border: 0;
-        }
-
-        .github-corner svg {
-            fill: #151513;
-            color: #fff;
-            position: absolute;
-            top: 0;
-            right: 0;
-            border: 0;
-            clip-path: polygon(0 0, 100% 0, 100% 100%);
-        }
-
-        .github-corner:hover .octo-arm {
-            animation: octocat-wave 560ms ease-in-out;
-        }
-
-        @keyframes octocat-wave {
-            0%, 100% { transform: rotate(0); }
-            20%, 60% { transform: rotate(-25deg); }
-            40%, 80% { transform: rotate(10deg); }
-        }
-
-        @media (max-width: 500px) {
-            .github-corner:hover .octo-arm {
-                animation: none;
-            }
-            .github-corner .octo-arm {
-                animation: octocat-wave 560ms ease-in-out;
-            }
+            background-color: #f4f4f4; /* Light gray header background */
         }
 
         #bottom-right-image {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 150px;
-            height: auto;
-            z-index: 1000;
+            position: fixed; /* Keeps the image in the same spot */
+            bottom: 20px; /* Distance from the bottom */
+            right: 20px; /* Distance from the right */
+            width: 150px; /* Adjust size */
+            height: auto; /* Maintain aspect ratio */
+            z-index: 1000; /* Ensure visibility over other elements */
         }
     </style>
 </head>
 <body>
-    <h1>List of Defense Innovation Organizations</h1>
+    <h1>List of Defense innovation orgs</h1>
     <p>
-        You can sort by clicking on column headers and filter using the search bar.<br>
+        You can sort by clicking on the top of any of the columns, and you can filter using the search bar.<br>
         Modeled after MetaOSINT's table, but simplified greatly. Thanks, ChatGPT.<br>
         -Dan Rust
     </p>
     <table id="csv-table" class="display nowrap" style="width:100%">
         <thead>
-            <tr id="table-header"></tr>
+            <tr id="table-header">
+                <!-- Headers will be populated dynamically -->
+            </tr>
         </thead>
-        <tbody id="table-body"></tbody>
+        <tbody id="table-body">
+            <!-- Data will be populated dynamically -->
+        </tbody>
     </table>
 
 <p>
-    See also:<br>
-    Explore various resources in the innovation ecosystem:<br>
+    See also: <br>
+    Explore various resources in the innovation ecosystem: <br>
     <a href="https://www.ctoinnovation.mil/innovation-organizations" target="_blank">Innovation organizations</a><br>
     <a href="https://aida.mitre.org/dod-innovation-ecosystem/" target="_blank">DoD innovation ecosystem</a><br><br>
     "NatSec.io is an exploratory effort incubated by the Defense Entrepreneurs Forum in 2021 that seeks to increase understanding of the national security innovation ecosystem, improve data literacy, and support learning mindsets with opportunities to experiment."
@@ -129,36 +88,29 @@
     <br>
     <br>
     <br>
-    <br>
-    <br>
-    <br>
 </p>
-
+    
     <img id="bottom-right-image" src="images/walter-glasses-300x199.jpg" alt="Scientist with glasses">
-
-    <a href="https://github.com/trustdan/Defense-Innovation-Table" class="github-corner" aria-label="View source on GitHub">
-        <svg width="80" height="80" viewBox="0 0 250 250">
-            <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-            <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" class="octo-arm"></path>
-            <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
-        </svg>
-    </a>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const csvFileUrl = "defense-innovation-orgs.csv";
+            const csvFileUrl = "defense-innovation-orgs.csv"; // Replace with the correct file path
 
             Papa.parse(csvFileUrl, {
                 download: true,
                 header: true,
                 complete: function (results) {
-                    let data = results.data.filter(row => 
-                        Object.values(row).some(value => value.trim() !== "")
-                    );
+                    let data = results.data;
 
+                    // Remove rows where all fields are blank
+                    data = data.filter(row => {
+                        return Object.values(row).some(value => value.trim() !== "");
+                    });
+
+                    // Get column headers
                     const columns = Object.keys(data[0]);
-                    
-                    // Initialize headers
+
+                    // Populate table headers
                     const headerRow = document.getElementById("table-header");
                     columns.forEach(col => {
                         const th = document.createElement("th");
@@ -178,26 +130,29 @@
                         tableBody.appendChild(tr);
                     });
 
-                    // Initialize DataTable with enhanced configurations
+                    // Initialize DataTable with sorting and scrolling
                     const table = $('#csv-table').DataTable({
-                        scrollY: "500px",
+                        scrollY: "500px", // Set scrollable height
                         scrollCollapse: true,
-                        paging: false,
-                        order: [[columns.indexOf("Name"), "asc"]],
-                        autoWidth: false,
-                        columnDefs: [{
-                            targets: '_all',
-                            render: function(data, type, row) {
-                                if (type === 'display') {
-                                    return data ? data : '';
-                                }
-                                return data;
-                            }
-                        }]
+                        paging: false, // No pagination
+                        order: [[columns.indexOf("Name"), "asc"]], // Sort by the "Name" column
+                    });
+
+                    // Initialize colResizable to enable column resizing
+                    $('#csv-table').colResizable({
+                        liveDrag: true, // Enable real-time resizing
+                        minWidth: 50, // Minimum column width
                     });
                 }
             });
         });
     </script>
+<a href="https://github.com/trustdan/Defense-Innovation-Table" target="_blank" class="github-corner" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; right: 0; border: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L250,0 Z"></path>
+        <path d="M128.3,109.0 C128.3,109.0 113.8,104.2 106.5,92.4 C106.5,92.4 102.2,86.2 95.7,85.2 C95.7,85.2 87.6,84.6 91.2,92.8 C91.2,92.8 94.7,101.3 101.7,106.8 C101.7,106.8 105.1,108.7 106.3,111.6 C106.3,111.6 107.3,116.4 104.0,118.6 C104.0,118.6 102.0,120.1 98.6,119.3 C98.6,119.3 93.6,118.1 91.6,115.0 C91.6,115.0 89.3,111.3 83.5,108.3 C83.5,108.3 78.4,105.7 72.6,106.9 C72.6,106.9 67.8,108.1 71.4,114.1 C71.4,114.1 74.9,119.4 81.3,122.7 C81.3,122.7 84.1,124.2 86.3,126.7 C86.3,126.7 89.8,131.3 94.9,132.1 C94.9,132.1 101.6,133.2 104.6,130.4 C104.6,130.4 108.8,127.4 107.9,123.0 C107.9,123.0 107.8,120.7 114.0,122.7 C114.0,122.7 125.3,126.0 129.6,129.6 C129.6,129.6 133.2,132.4 136.2,126.2 C136.2,126.2 138.8,120.4 143.5,119.1 C143.5,119.1 148.6,117.4 151.4,120.6 C151.4,120.6 153.7,123.6 149.4,129.4 C149.4,129.4 146.4,134.4 137.2,137.4 C137.2,137.4 133.6,138.7 130.7,140.9 C130.7,140.9 125.7,145.0 130.2,150.2 C130.2,150.2 132.4,152.6 136.8,153.0 C136.8,153.0 141.4,153.5 146.0,151.6 C146.0,151.6 149.9,149.9 151.7,147.2 C151.7,147.2 153.5,144.3 156.0,145.5 C156.0,145.5 157.2,146.0 157.8,148.3 C157.8,148.3 158.4,151.0 156.1,153.5 C156.1,153.5 153.3,157.6 148.4,160.0 C148.4,160.0 143.9,162.0 140.3,165.5 C140.3,165.5 134.7,171.1 137.2,177.7 C137.2,177.7 138.8,181.7 141.6,182.5 C141.6,182.5 145.4,183.8 148.8,182.1 C148.8,182.1 154.6,179.7 158.2,176.1 C158.2,176.1 164.1,170.6 166.7,165.7 C166.7,165.7 170.2,158.5 170.4,152.1 C170.4,152.1 170.6,146.0 170.7,141.0 C170.7,141.0 170.8,133.7 172.9,131.7 C172.9,131.7 174.4,130.3 176.9,131.4 C176.9,131.4 178.9,132.4 180.4,134.4 C180.4,134.4 183.7,139.2 186.4,142.1 C186.4,142.1 191.5,148.4 192.5,153.5 C192.5,153.5 193.4,157.9 194.4,160.6 C194.4,160.6 196.5,166.8 198.4,170.6 C198.4,170.6 200.6,174.7 202.6,177.1 C202.6,177.1 207.0,182.4 211.0,183.7 C211.0,183.7 214.9,185.0 218.8,184.1 C218.8,184.1 224.0,182.6 225.8,178.7 C225.8,178.7 227.0,175.4 224.0,172.0 C224.0,172.0 221.6,169.4 218.0,168.7 C218.0,168.7 214.0,168.0 210.0,169.3 C210.0,169.3 204.4,171.2 200.6,173.7 C200.6,173.7 195.0,177.4 190.6,178.5 C190.6,178.5 185.0,179.9 182.6,178.1 C182.6,178.1 179.8,176.4 178.8,174.7 C178.8,174.7 177.0,172.0 174.4,171.4 C174.4,171.4 170.7,170.4 166.6,170.9 C166.6,170.9 162.8,171.3 160.7,173.6 C160.7,173.6 158.0,176.3 158.8,178.7 C158.8,178.7 160.0,181.7 162.3,182.6 C162.3,182.6 165.4,183.6 168.6,182.1 C168.6,182.1 171.8,180.7 174.2,177.7 C174.2,177.7 176.6,174.7 177.8,171.7 C177.8,171.7 179.6,167.7 179.6,164.0 C179.6,164.0 179.4,160.0 178.6,157.1 C178.6,157.1 177.6,153.7 176.4,151.7 C176.4,151.7 173.8,146.3 172.6,145.4 C172.6,145.4 169.4,142.1 166.4,142.4 C166.4,142.4 162.9,142.7 160.4,144.3 C160.4,144.3 157.4,146.3 156.0,147.4 C156.0,147.4 152.4,150.4 148.4,152.6 C148.4,152.6 144.8,154.4 141.8,156.4 C141.8,156.4 136.4,160.4 133.6,161.0 C133.6,161.0 127.6,163.4 125.4,165.3 C125.4,165.3 121.6,168.4 121.4,171.0 C121.4,171.0 121.6,174.4 123.0,176.6 C123.0,176.6 125.0,179.7 128.0,181.3 C128.0,181.3 131.0,182.6 134.4,182.7 C134.4,182.7 137.2,182.8 140.4,181.4 C140.4,181.4 145.6,179.2 149.6,176.6 C149.6,176.6 155.2,172.6 160.4,169.1 C160.4,169.1 165.2,166.0 168.6,162.1 C168.6,162.1 171.6,158.4 173.2,154.3 C173.2,154.3 174.8,150.3 174.2,147.7 C174.2,147.7 173.6,144.3 171.6,143.7 C171.6,143.7 169.8,143.3 167.6,144.0 C167.6,144.0 165.6,144.8 164.4,147.0 C164.4,147.0 162.6,150.4 161.6,153.4 C161.6,153.4 159.4,160.0 159.4,161.3 C159.4,161.3 157.4,167.6 157.4,169.6 C157.4,169.6 157.0,172.4 159.2,173.4 C159.2,173.4 161.8,174.3 164.8,173.7 C164.8,173.7 168.2,172.7 171.6,171.1 C171.6,171.1 176.2,169.3 179.4,166.9 C179.4,166.9 183.6,164.0 185.2,160.9 C185.2,160.9 186.6,158.3 186.6,156.0 C186.6,156.0 186.4,154.6 185.6,153.1 C185.6,153.1 184.2,151.1 182.6,150.1 C182.6,150.1 180.0,148.9 177.0,149.4 C177.0,149.4 174.6,150.0 172.6,152.1 C172.6,152.1 170.0,154.6 168.8,156.0 C168.8,156.0 166.6,158.6 166.0,159.0 C166.0,159.0 162.4,163.0 160.2,164.0 C160.2,164.0 156.8,165.0 155.0,164.4 C155.0,164.4 151.6,163.0 149.2,161.2 C149.2,161.2 146.6,159.0 144.6,156.8 C144.6,156.8 140.6,151.4 140.0,149.0 C140.0,149.0 138.6,144.4 138.4,143.2 C138.4,143.2 138.0,141.2 139.2,140.0 C139.2,140.0 140.8,138.6 142.2,138.0 C142.2,138.0 144.2,137.0 146.0,137.4 C146.0,137.4 148.2,137.8 149.8,138.6 C149.8,138.6 151.8,139.8 153.2,140.8 C153.2,140.8 155.0,142.0 156.0,144.2 C156.0,144.2 157.8,148.6 159.0,151.4 C159.0,151.4 161.8,157.4 164.2,159.4 C164.2,159.4 168.6,162.0 170.2,161.8 C170.2,161.8 172.0,161.4 173.4,160.4 C173.4,160.4 175.2,159.0 176.6,157.6 C176.6,157.6 178.4,156.0 179.4,154.6 C179.4,154.6 181.0,152.0 181.8,150.4 C181.8,150.4 183.4,148.0 183.4,146.8 C183.4,146.8 183.4,144.6 183.4,144.0 C183.4,144.0 183.4,143.2 183.0,142.4 C183.0,142.4 182.0,141.6 180.4,141.6 C180.4,141.6 178.4,142.4 176.4,144.0 C176.4,144.0 173.8,146.4 172.4,148.0 C172.4,148.0 170.8,150.4 170.6,152.0 C170.6,152.0 170.0,153.2 169.8,154.0 C169.8,154.0 169.0,156.0 169.2,157.4 C169.2,157.4 169.6,159.0 171.0,160.0 C171.0,160.0 172.2,160.8 173.8,160.6 C173.8,160.6 176.0,160.2 177.8,158.6 C177.8,158.6 180.2,156.2 180.8,154.0 C180.8,154.0 181.4,151.8 181.4,149.0 C181.4,149.0 181.4,146.4 181.6,145.2 C181.6,145.2 182.4,142.6 182.4,141.4 C182.4,141.4 182.6,140.6 183.0,139.8 C183.0,139.8 183.8,139.0 184.2,138.8 C184.2,138.8 185.0,138.8 185.6,138.8 C185.6,138.8 186.8,138.8 187.8,139.6 C187.8,139.6 189.4,140.8 190.4,142.4 C190.4,142.4 191.8,144.6 193.4,146.4 C193.4,146.4 195.4,148.6 196.4,149.8 C196.4,149.8 198.8,151.4 199.8,151.8 C199.8,151.8 202.4,153.2 204.0,154.0 C204.0,154.0 205.4,154.6 206.6,154.8 C206.6,154.8 208.4,154.8 210.0,154.0 C210.0,154.0 212.8,152.8 214.4,151.6 C214.4,151.6 216.6,149.8 217.6,148.8 C217.6,148.8 220.0,146.4 222.6,144.8 C222.6,144.8 226.0,142.4 227.6,140.8 C227.6,140.8 230.4,138.6 231.8,136.8 C231.8,136.8 234.4,134.0 235.6,132.4 C235.6,132.4 238.0,130.0 239.2,128.0 C239.2,128.0 242.4,122.0 243.2,118.4 C243.2,118.4 243.8,115.2 244.4,113.6"></path>
+    </svg>
+</a>
+
 </body>
 </html>
