@@ -5,19 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Searchable Table</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/colresizable/colResizable.css"> <!-- Add colResizable CSS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable.min.js"></script> <!-- Add colResizable JS -->
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         #csv-table_wrapper {
             max-width: 100%;
         }
+
         table {
             width: 100%;
+            table-layout: auto; /* Allow automatic column width */
+            border-collapse: collapse; /* Neat table border */
+            word-wrap: break-word; /* Ensure text wraps */
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd; /* Add borders for better visuals */
+            vertical-align: top; /* Align content to the top of the cell */
+        }
+
+        th {
+            background-color: #f4f4f4; /* Light gray header background */
+        }
+
+        #bottom-right-image {
+            position: fixed; /* Keeps the image in the same spot */
+            bottom: 20px; /* Distance from the bottom */
+            right: 20px; /* Distance from the right */
+            width: 150px; /* Adjust size */
+            height: auto; /* Maintain aspect ratio */
+            z-index: 1000; /* Ensure visibility over other elements */
         }
     </style>
 </head>
@@ -25,7 +51,7 @@
     <h1>List of Defense innovation orgs</h1>
     <p>
         You can sort by clicking on the top of any of the columns, and you can filter using the search bar.<br>
-        Modeled after MetaOSINT's table, but simplified greatly.  Thanks, ChatGPT.<br>
+        Modeled after MetaOSINT's table, but simplified greatly. Thanks, ChatGPT.<br>
         -Dan Rust
     </p>
     <table id="csv-table" class="display nowrap" style="width:100%">
@@ -62,28 +88,13 @@
     <br>
     <br>
     <br>
-    <br>
-    <br>
-    <br>
 </p>
-
-    <!-- Add the image -->
+    
     <img id="bottom-right-image" src="images/walter-glasses-300x199.jpg" alt="Scientist with glasses">
-
-    <style>
-        #bottom-right-image {
-            position: fixed; /* Makes the image stay in place even when scrolling */
-            bottom: 20px; /* Distance from the bottom of the viewport */
-            right: 20px; /* Distance from the right of the viewport */
-            width: 150px; /* Adjust size as needed */
-            height: auto; /* Maintain aspect ratio */
-            z-index: 1000; /* Ensure it stays on top of other content */
-        }
-    </style>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const csvFileUrl = "defense-innovation-orgs.csv"; // Replace with the correct file path in your repository
+            const csvFileUrl = "defense-innovation-orgs.csv"; // Replace with the correct file path
 
             Papa.parse(csvFileUrl, {
                 download: true,
@@ -120,11 +131,17 @@
                     });
 
                     // Initialize DataTable with sorting and scrolling
-                    $('#csv-table').DataTable({
-                        scrollY: "500px", // Increase the height to make more content visible
+                    const table = $('#csv-table').DataTable({
+                        scrollY: "500px", // Set scrollable height
                         scrollCollapse: true,
-                        paging: false,
-                        order: [[columns.indexOf("Name"), "asc"]], // Sort by the "Name" column, A-Z
+                        paging: false, // No pagination
+                        order: [[columns.indexOf("Name"), "asc"]], // Sort by the "Name" column
+                    });
+
+                    // Initialize colResizable to enable column resizing
+                    $('#csv-table').colResizable({
+                        liveDrag: true, // Enable real-time resizing
+                        minWidth: 50, // Minimum column width
                     });
                 }
             });
