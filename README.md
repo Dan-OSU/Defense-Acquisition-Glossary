@@ -4,7 +4,7 @@ Please download the defense-innovation-org.xlsx for better data manipulation usi
 Or just go to [definno.com](https://definno.com).
 
 
-## Awesome SBIR / STTR [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
+## See below for my old Awesome SBIR / STTR list [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
 
 A curated list of awesome resources for small business companies interested in doing business with the federal government.
 
