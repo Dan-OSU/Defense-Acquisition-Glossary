@@ -208,42 +208,35 @@
 
                     // Initialize DataTable with improved settings for content-based sizing and fixed header
                     const table = $('#csv-table').DataTable({
-                        scrollX: true,           // Enable horizontal scrolling
-                        scrollY: "500px",        // Enable vertical scrolling
+                        scrollX: true,
+                        scrollY: "500px",
                         scrollCollapse: true,
                         paging: false,
-                        autoWidth: true,         // Enable automatic column sizing
-                        order: [[columns.indexOf("Name"), "asc"]],
+                        autoWidth: true,
+                        // Change the default sort to "Micro-Category" instead of "Name"
+                        order: [[columns.indexOf("Micro-Category"), "asc"]],
                         fixedHeader: {
-                            header: true,        // Keep header fixed vertically
-                            headerOffset: 0,     // Offset from top of window
-                            fixedOffset: 0       // Offset for fixed header
+                            header: true,
+                            headerOffset: 0,
+                            fixedOffset: 0
                         },
                         columnDefs: [{
                             targets: '_all',
                             render: function(data, type, row) {
                                 if (type === 'display') {
-                                    // First, create a div to maintain our text wrapping
                                     let content = '<div style="white-space: normal;">';
-                                    
-                                    // Split the content by spaces to process each word
                                     const words = data.split(/\s+/);
                                     words.forEach((word, index) => {
-                                        // Check if the word looks like a URL
                                         if (word.toLowerCase().startsWith('http://') || 
                                             word.toLowerCase().startsWith('https://')) {
-                                            // Convert URL to clickable link, opening in new tab
                                             content += `<a href="${word}" target="_blank" rel="noopener noreferrer">${word}</a>`;
                                         } else {
-                                            // Keep non-URL text as is
                                             content += word;
                                         }
-                                        // Add space between words, except for the last word
                                         if (index < words.length - 1) {
                                             content += ' ';
                                         }
                                     });
-                                    
                                     content += '</div>';
                                     return content;
                                 }
