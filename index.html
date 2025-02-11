@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Defense Acquisitions Glossary</title>
+    <title>Defense Innovation Organizations</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -25,10 +25,11 @@
         }
 
         .dataTables_filter input {
-            width: 300px;
+            width: 300px !important;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            margin-left: 10px;
         }
 
         table.dataTable {
@@ -59,99 +60,98 @@
             font-size: 1.2em;
             color: #666;
         }
-
-        /* Processing indicator styles */
-        .dataTables_processing {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 200px;
-            margin-left: -100px;
-            text-align: center;
-            padding: 15px;
-            background: rgba(255,255,255,0.9);
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
     </style>
 </head>
 <body>
     <h1>Defense Innovation Organizations</h1>
     <div id="loading" class="loading-message">Loading data, please wait...</div>
-    <table id="dataTable" class="display" style="width:100%">
+    <table id="csv-table" class="display" style="width:100%">
         <thead>
             <tr></tr>
         </thead>
+        <tbody></tbody>
     </table>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let dataTable;
+        document.addEventListener('DOMContentLoaded', async function() {
             const loadingDiv = document.getElementById('loading');
+            
+            try {
+                // Fetch the CSV content using the fs API
+                const csvContent = await window.fs.readFile('DAU-glossary.csv', { encoding: 'utf8' });
+                
+                // Parse the CSV data
+                Papa.parse(csvContent, {
+                    header: true,
+                    complete: function(results) {
+                        // Filter out empty rows
+                        let data = results.data.filter(row => 
+                            Object.values(row).some(value => value && value.trim() !== "")
+                        );
 
-            // Configure PapaParse with worker and chunk processing
-            Papa.parse('DAU-glossary.csv', {
-                download: true,
-                header: true,
-                worker: true,
-                chunk: function(results, parser) {
-                    // Process the data in chunks
-                    processDataChunk(results.data);
-                },
-                complete: function() {
-                    loadingDiv.style.display = 'none';
-                    if (dataTable) {
-                        dataTable.draw();
+                        // Get columns from the first row
+                        const columns = Object.keys(data[0]).map(col => ({
+                            title: col,
+                            data: col
+                        }));
+
+                        // Initialize DataTable
+                        const table = $('#csv-table').DataTable({
+                            data: data,
+                            columns: columns,
+                            deferRender: true,
+                            scrollY: '60vh',
+                            scrollCollapse: true,
+                            scroller: true,
+                            pageLength: 25,
+                            dom: '<"top"f>rt<"bottom"lip><"clear">',
+                            order: [[0, 'asc']],
+                            language: {
+                                search: 'Search / Filter:'
+                            },
+                            initComplete: function() {
+                                loadingDiv.style.display = 'none';
+                                
+                                // Enhance search with debouncing
+                                const api = this.api();
+                                $('.dataTables_filter input')
+                                    .off()
+                                    .on('input', function() {
+                                        const searchValue = this.value;
+                                        clearTimeout(this.searchTimeout);
+                                        this.searchTimeout = setTimeout(() => {
+                                            api.search(searchValue).draw();
+                                        }, 300);
+                                    });
+                            }
+                        });
+
+                        // Handle links in cells
+                        table.on('draw', function() {
+                            $('td', table.rows().nodes()).each(function() {
+                                const cell = $(this);
+                                const text = cell.text();
+                                if (text.match(/https?:\/\/[^\s]+/)) {
+                                    const words = text.split(/\s+/);
+                                    const html = words.map(word => {
+                                        if (word.match(/https?:\/\/[^\s]+/)) {
+                                            return `<a href="${word}" target="_blank" rel="noopener noreferrer">${word}</a>`;
+                                        }
+                                        return word;
+                                    }).join(' ');
+                                    cell.html(html);
+                                }
+                            });
+                        });
+                    },
+                    error: function(error) {
+                        console.error('Error parsing CSV:', error);
+                        loadingDiv.textContent = 'Error loading data. Please try again.';
                     }
-                },
-                error: function(error) {
-                    console.error('Error parsing CSV:', error);
-                    loadingDiv.textContent = 'Error loading data. Please try again.';
-                }
-            });
-
-            function processDataChunk(chunk) {
-                if (!dataTable) {
-                    // Initialize DataTable with the first chunk
-                    const columns = Object.keys(chunk[0]).map(key => ({
-                        title: key,
-                        data: key
-                    }));
-
-                    dataTable = $('#dataTable').DataTable({
-                        columns: columns,
-                        data: chunk,
-                        deferRender: true,
-                        scroller: true,
-                        scrollY: 400,
-                        scrollCollapse: true,
-                        pageLength: 25,
-                        processing: true,
-                        orderClasses: false,
-                        dom: '<"top"f>rt<"bottom"lip><"clear">',
-                        language: {
-                            search: 'Search:',
-                            processing: 'Processing...'
-                        },
-                        initComplete: function() {
-                            // Enhance search functionality
-                            const api = this.api();
-                            $('.dataTables_filter input')
-                                .off()
-                                .on('input', function() {
-                                    const searchValue = this.value;
-                                    clearTimeout(this.searchTimeout);
-                                    this.searchTimeout = setTimeout(() => {
-                                        api.search(searchValue).draw();
-                                    }, 300);
-                                });
-                        }
-                    });
-                } else {
-                    // Add new chunks to existing DataTable
-                    dataTable.rows.add(chunk).draw(false);
-                }
+                });
+            } catch (error) {
+                console.error('Error reading file:', error);
+                loadingDiv.textContent = 'Error loading data. Please try again.';
             }
         });
     </script>
