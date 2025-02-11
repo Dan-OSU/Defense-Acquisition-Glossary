@@ -22,6 +22,8 @@
         .dataTables_filter {
             margin-bottom: 20px;
             width: 100%;
+            text-align: left !important;
+            float: left !important;
         }
 
         .dataTables_filter input {
@@ -30,6 +32,15 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             margin-left: 10px;
+        }
+
+        #bottom-right-image {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 150px;
+            height: auto;
+            z-index: 1000;
         }
 
         table.dataTable {
@@ -72,6 +83,8 @@
         <tbody></tbody>
     </table>
 
+    <img id="bottom-right-image" src="images/walter-glasses-300x199.jpg" alt="Walter Bishop">
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const loadingDiv = document.getElementById('loading');
@@ -103,6 +116,7 @@
                         scrollCollapse: true,
                         scroller: true,
                         pageLength: 100,
+                        lengthMenu: [[100, 250, 500, 1000], [100, 250, 500, 1000]],
                         dom: '<"top"f>rt<"bottom"lip><"clear">',
                         order: [[0, 'asc']],
                         language: {
