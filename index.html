@@ -216,12 +216,14 @@
                         tableBody.appendChild(tr);
                     });
 
-                    // Initialize DataTable with improved settings for content-based sizing and fixed header
+                    // Initialize DataTable with deferred rendering and pagination
                     const table = $('#csv-table').DataTable({
                         scrollX: true,
                         scrollY: "500px",
                         scrollCollapse: true,
-                        paging: false,
+                        paging: true,              // Enable pagination
+                        pageLength: 50,            // Show 50 rows per page (adjust as needed)
+                        deferRender: true,         // Defer row creation until needed
                         autoWidth: true,
                         // Change the default sort to "Micro-Category" instead of "Name"
                         order: [[columns.indexOf("Micro-Category"), "asc"]],
@@ -231,7 +233,7 @@
                             fixedOffset: 0
                         },
                         language: {
-                            search: "Search / filter:" // custom text for the search label
+                            search: "Search / filter:" // Custom text for the search label
                         },
                         columnDefs: [{
                             targets: '_all',
