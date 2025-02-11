@@ -73,86 +73,81 @@
     </table>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const loadingDiv = document.getElementById('loading');
             
-            try {
-                // Fetch the CSV content using the fs API
-                const csvContent = await window.fs.readFile('DAU-glossary.csv', { encoding: 'utf8' });
-                
-                // Parse the CSV data
-                Papa.parse(csvContent, {
-                    header: true,
-                    complete: function(results) {
-                        // Filter out empty rows
-                        let data = results.data.filter(row => 
-                            Object.values(row).some(value => value && value.trim() !== "")
-                        );
+            // Use Papa.parse with direct URL
+            Papa.parse('DAU-glossary.csv', {
+                download: true,
+                header: true,
+                dynamicTyping: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    // Filter out empty rows
+                    let data = results.data.filter(row => 
+                        Object.values(row).some(value => value && String(value).trim() !== "")
+                    );
 
-                        // Get columns from the first row
-                        const columns = Object.keys(data[0]).map(col => ({
-                            title: col,
-                            data: col
-                        }));
+                    // Get columns from the first row
+                    const columns = Object.keys(data[0]).map(col => ({
+                        title: col,
+                        data: col
+                    }));
 
-                        // Initialize DataTable
-                        const table = $('#csv-table').DataTable({
-                            data: data,
-                            columns: columns,
-                            deferRender: true,
-                            scrollY: '60vh',
-                            scrollCollapse: true,
-                            scroller: true,
-                            pageLength: 25,
-                            dom: '<"top"f>rt<"bottom"lip><"clear">',
-                            order: [[0, 'asc']],
-                            language: {
-                                search: 'Search / Filter:'
-                            },
-                            initComplete: function() {
-                                loadingDiv.style.display = 'none';
-                                
-                                // Enhance search with debouncing
-                                const api = this.api();
-                                $('.dataTables_filter input')
-                                    .off()
-                                    .on('input', function() {
-                                        const searchValue = this.value;
-                                        clearTimeout(this.searchTimeout);
-                                        this.searchTimeout = setTimeout(() => {
-                                            api.search(searchValue).draw();
-                                        }, 300);
-                                    });
-                            }
-                        });
-
-                        // Handle links in cells
-                        table.on('draw', function() {
-                            $('td', table.rows().nodes()).each(function() {
-                                const cell = $(this);
-                                const text = cell.text();
-                                if (text.match(/https?:\/\/[^\s]+/)) {
-                                    const words = text.split(/\s+/);
-                                    const html = words.map(word => {
-                                        if (word.match(/https?:\/\/[^\s]+/)) {
-                                            return `<a href="${word}" target="_blank" rel="noopener noreferrer">${word}</a>`;
-                                        }
-                                        return word;
-                                    }).join(' ');
-                                    cell.html(html);
+                    // Initialize DataTable
+                    const table = $('#csv-table').DataTable({
+                        data: data,
+                        columns: columns,
+                        deferRender: true,
+                        scrollY: '60vh',
+                        scrollCollapse: true,
+                        scroller: true,
+                        pageLength: 25,
+                        dom: '<"top"f>rt<"bottom"lip><"clear">',
+                        order: [[0, 'asc']],
+                        language: {
+                            search: 'Search / Filter:'
+                        },
+                        columnDefs: [{
+                            targets: '_all',
+                            render: function(data, type, row) {
+                                if (type === 'display' && data) {
+                                    const text = String(data);
+                                    if (text.match(/https?:\/\/[^\s]+/)) {
+                                        const words = text.split(/\s+/);
+                                        return words.map(word => {
+                                            if (word.match(/https?:\/\/[^\s]+/)) {
+                                                return `<a href="${word}" target="_blank" rel="noopener noreferrer">${word}</a>`;
+                                            }
+                                            return word;
+                                        }).join(' ');
+                                    }
                                 }
-                            });
-                        });
-                    },
-                    error: function(error) {
-                        console.error('Error parsing CSV:', error);
-                        loadingDiv.textContent = 'Error loading data. Please try again.';
-                    }
-                });
-            } catch (error) {
-                console.error('Error reading file:', error);
-                loadingDiv.textContent = 'Error loading data. Please try again.';
-            }
+                                return data;
+                            }
+                        }],
+                        initComplete: function() {
+                            loadingDiv.style.display = 'none';
+                            
+                            // Enhance search with debouncing
+                            const api = this.api();
+                            $('.dataTables_filter input')
+                                .off()
+                                .on('input', function() {
+                                    const searchValue = this.value;
+                                    clearTimeout(this.searchTimeout);
+                                    this.searchTimeout = setTimeout(() => {
+                                        api.search(searchValue).draw();
+                                    }, 300);
+                                });
+                        }
+                    });
+                },
+                error: function(error) {
+                    console.error('Error parsing CSV:', error);
+                    loadingDiv.textContent = 'Error loading data. Please try again.';
+                }
+            });
         });
     </script>
 </body>
