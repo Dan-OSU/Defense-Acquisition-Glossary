@@ -28,7 +28,7 @@
             text-align: left !important;
         }
         div.dataTables_filter input {
-            width: 200px !important; /* Adjust if needed */
+            width: 300px !important; /* Adjust if needed */
         }
         
         table {
@@ -229,6 +229,9 @@
                             header: true,
                             headerOffset: 0,
                             fixedOffset: 0
+                        },
+                        language: {
+                            search: "Search / filter:" // custom text for the search label
                         },
                         columnDefs: [{
                             targets: '_all',
